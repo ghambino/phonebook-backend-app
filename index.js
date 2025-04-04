@@ -26,26 +26,28 @@ let personsData = [
 ]
 
 const app = express();
-app.use(cors())
-app.use(express.static('dist'));
+app.use(cors());
+
 app.use(express.json());
+
+app.use(express.static('dist'));
 
 morgan.token('tile', function(req, res) {
     return JSON.stringify(req.body)
-})
+});
 
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :tile'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :tile'));
 
 app.get('/api/persons', (request, response) => {
     response.json(personsData);
-})
+});
 
 app.get('/info', (request, response) => {
     response.send(`
         <p>Phonebook has info for ${personsData.length} people</p>
         <p>${new Date()}</p>
     `)
-})
+});
 
 app.get(`/api/persons/:id`, (request, response) => {
     const id = request.params.id;
@@ -59,7 +61,7 @@ app.get(`/api/persons/:id`, (request, response) => {
     }
 
     return response.json(targettedPerson)
-})
+});
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id;
@@ -74,7 +76,7 @@ app.delete('/api/persons/:id', (request, response) => {
 
     personsData = personsData.filter(unit => unit.id !== id);
     response.status(204).end()
-})
+});
 
 app.post('/api/persons', (request, response) => {
     const { name, number } = request.body;
@@ -110,10 +112,10 @@ app.post('/api/persons', (request, response) => {
         message: 'contact created successfully',
         data: newPerson
     })
-})
+});
 
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`)
-})
+});
